@@ -12,9 +12,9 @@ Build a chrome extension to detect iframe and protect user security
 # File directory in ChromeExtentionIframe:
 1. manifest.json: configure file
 2. button interface: popup.html, popup.js, button.css
-    a. popup.js is the core function to talk with local html file
-3. [optional] options.html, options.js
-4. extention image folder: image
+3. popup.js is the core function to talk with local html file
+4. [optional] options.html, options.js
+5. extention image folder: image
 
 # Test the chrome extention:
 Local test: Open iframe_demo_example.html in IframeDetectionTest
