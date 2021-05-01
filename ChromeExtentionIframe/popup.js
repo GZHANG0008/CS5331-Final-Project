@@ -17,24 +17,27 @@ async function readIframeAndChangeColorAsync() {
     function: setPageBackgroundColor,
   },
     (injectionResults) => {
-      console.log(injectionResults[0].result);
-      let innerList = "";
-      let buttonIdList = [];
-      if (injectionResults[0].result) {
-        let count = 1;
-
-        for (const ele of injectionResults[0].result) {
-          let id = "iFrameDetector_Frame_" + count;
-          buttonIdList.push(id);
-          innerList += '<li><button id="' + id + '" >' + ele + "</button></li>"
-          count++;
+      console.log(frameListDiv.innerText);
+      if (!frameListDiv.innerText) {
+        console.log(injectionResults[0].result);
+        console.dir(frameListDiv)
+        let innerList = "";
+        let buttonIdList = [];
+        if (injectionResults[0].result) {
+          let count = 1;
+          for (const ele of injectionResults[0].result) {
+            let id = "iFrameDetector_Frame_" + count;
+            buttonIdList.push(id);
+            innerList += '<li><button id="' + id + '" >' + ele + "</button></li>"
+            count++;
+          }
+          frameListDiv.innerHTML = "<ol>" + innerList + "</ol>"
         }
-        frameListDiv.innerHTML = "<ol>" + innerList + "</ol>"
-      }
-      for (btnId of buttonIdList) {
-        let btn = document.getElementById(btnId);
-        console.log(btn.id)
-        btn.addEventListener("click", eventH);
+        for (btnId of buttonIdList) {
+          let btn = document.getElementById(btnId);
+          console.log(btn.id)
+          btn.addEventListener("click", eventH);
+        }
       }
     });
 }
@@ -47,37 +50,46 @@ async function eventH(event) {
   let domain = btn.innerText;
   console.dir(btn);
   console.log("id", id, "domain", domain);
-  await frameToggle(id, domain);
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  let obj = { id, domain };
+
+  console.dir(chrome.tabs.executeScript)
+  chrome.storage.sync.set(obj, function () {
+    console.log('after set storage');
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      function: frameToggle,
+    })
+  });
+
 }
 
 async function frameToggle(id, domain) {
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  let obj = { id, domain };
-  console.log("var iframeDetectorVar = JSON.parse('" + JSON.stringify(obj) + "');")
-  var fn = Function("var iframeDetectorVar = JSON.parse('" + JSON.stringify(obj) + "');");
-  console.dir(chrome.tabs.executeScript)
-  chrome.storage.sync.set(obj, function () {
-    console.log('Value is set to ' + value);
-  });
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    function: fn,
+  chrome.storage.sync.get(['id', 'domain'], function (res) {
+
+    let iframe_element = document.getElementsByTagName("iframe");
+    let id = res.id;
+    let domain = res.domain;
+    console.log(iframe_element);
+    console.log(id, domain, iframe_element[id - 1])
+    if (id && domain && iframe_element[id - 1]) {
+      let targetIFrame = iframe_element[id - 1];
+      let value = targetIFrame.attributes.src.value;
+      console.log("value 1", value)
+      if (value != "null") {
+        console.log("in if block", value)
+        targetIFrame.attributes.src.value = null;
+      }
+      else {
+        console.log("in else block", value)
+        targetIFrame.attributes.src.value = domain;
+
+      }
+
+    }
+
   })
-  // chrome.tabs.executeScript(
-  //   tab.id,
-  //   {
-  //     code: "var iframeDetectorVar = JSON.parse('" + JSON.stringify(obj) + "');",
-  //   },
-  //   function () {
-  //     console.log("reached here");
-  //     chrome.scripting.executeScript({
-  //       target: { tabId: tab.id },
-  //       function: () => {
-  //         console.log(iframeDetectorVar);
-  //       }
-  //     })
-  //   }
-  // );
+
 }
 
 // async function toggleFrameSetting(id, domain) {
