@@ -61,12 +61,10 @@ async function eventH(event) {
       function: frameToggle,
     })
   });
-
 }
 
 async function frameToggle(id, domain) {
   chrome.storage.sync.get(['id', 'domain'], function (res) {
-
     let iframe_element = document.getElementsByTagName("iframe");
     let id = res.id;
     let domain = res.domain;
@@ -83,11 +81,8 @@ async function frameToggle(id, domain) {
       else {
         console.log("in else block", value)
         targetIFrame.attributes.src.value = domain;
-
       }
-
     }
-
   })
 
 }
