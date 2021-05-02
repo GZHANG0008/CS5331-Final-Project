@@ -154,4 +154,50 @@ function setPageBackgroundColor() {
   return listOfUrl
 }
 
-window.onload = readIframeAndChangeColorAsync;
+
+function findFrames() {
+  var color = "#3aa757"
+  var iframe_element = document.getElementsByTagName("iframe");
+  var listOfUrl = []
+  for (i = 0; i < iframe_element.length; i++) {
+    iEle = iframe_element[i];
+    listOfUrl.push(iEle.attributes.src.value)
+  }
+  console.log(listOfUrl)
+  return listOfUrl
+}
+
+async function readIFrames() {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: findFrames,
+  },
+    (injectionResults) => {
+      console.log(frameListDiv.innerText);
+      if (!frameListDiv.innerText) {
+        console.log(injectionResults[0].result);
+        console.dir(frameListDiv)
+        let innerList = "";
+        let buttonIdList = [];
+        if (injectionResults[0].result) {
+          let count = 1;
+          for (const ele of injectionResults[0].result) {
+            let id = "iFrameDetector_Frame_" + count;
+            buttonIdList.push(id);
+            innerList += '<li><button id="' + id + '" >' + ele + "</button></li>"
+            count++;
+          }
+          frameListDiv.innerHTML = "<ol>" + innerList + "</ol>"
+        }
+        for (btnId of buttonIdList) {
+          let btn = document.getElementById(btnId);
+          console.log(btn.id)
+          btn.addEventListener("click", eventH);
+        }
+      }
+    });
+}
+
+window.onload = readIFrames;
