@@ -9,6 +9,10 @@ Build a chrome extension to detect iframe and protect user security
 3. load unpacked button
 4. select the extension code directory ChromeExtentionIframe
 
+# to try the application with our example iframe:
+1. use chrome to open the IframeDetectionTest/iframe_demo_example.html
+2. click the extension icon and try with all the buttons
+
 # File directory in ChromeExtentionIframe:
 1. manifest.json: configure file
 2. button interface: popup.html, popup.js, button.css
