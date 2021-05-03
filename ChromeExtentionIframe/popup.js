@@ -138,6 +138,7 @@ function setPageBackgroundColor() {
   var listOfUrl = []
   for (i = 0; i < iframe_element.length; i++) {
     iframe_element[i].style.backgroundColor = color;
+    iframe_element[i].style.opacity = 1;
     iEle = iframe_element[i];
     console.dir(iEle);
     console.log(iEle.attributes.src.value)
