@@ -1,18 +1,37 @@
 <!DOCTYPE html>
 <html>
 
-<body style="background-color: transparent">
+<head>
+    <style>
+        #IDiframe {
+            opacity: 0.000001;
+            /* make the frame invisiable */
+        }
+
+        .aParent div {
+            float: left;
+            clear: none;
+        }
+    </style>
+</head>
+
+<body>
 
     <h1>Iframe demo page</h1>
     <p>It is to test the chrome extention on the iframe.</p>
+    <div class="aParent">
+        <div>
+            <h3>The first iframe element</h3>
+            <iframe src="example_iframe.html" title="Test iFrame function" allowtransparency="true">
+            </iframe>
+        </div>
+        <div>
+            <h3>The second iframe element</h3>
+            <iframe id="IDiframe" , src="example_iframe2.html" title="Test iFrame function">
+            </iframe>
+        </div>
 
-    <h1>The first iframe element</h1>
-    <iframe src="example_iframe.html" title="Test iFrame function" allowtransparency="true">
-    </iframe>
-
-    <h1>The second iframe element</h1>
-    <iframe id="IDiframe" , src="example_iframe2.html" title="Test iFrame function">
-    </iframe>
+    </div>
 
 </body>
 
